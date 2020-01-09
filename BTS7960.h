@@ -1,21 +1,26 @@
-#ifndef L289N__
-#define L289N__
-#endif
+/* 1/8/2020
+ * Samuel Ryckman
+ * 
+ * Header file for the Wingoneer BTS7960 motor controller library.
+ */
+
+#ifndef BTS7960_H
+#define BTS7960_H
 
 #include "Arduino.h"
 
-class L289N
+class BTS7960
 {
 public:
-  L289N(int _dir1, int _dir2, int _pwm, bool _invert = false);
+  BTS7960(int rPwmPin, int lPwmPin, int enPin, bool invert = false);
   
-  void forwards();
-  void backwards();
   void init();
-  void setSpeed(int speed);
-  void setSpeedDirection(int speed);
+  void run(int speed);
+  void stop();
   
-  int dir1, dir2, pwm;
+private:
+  int rPwmPin, lPwmPin, enPin;
   bool invert;
-  bool forwardDirection, backwardDirection;
 };
+
+#endif

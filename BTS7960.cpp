@@ -1,61 +1,71 @@
-#include "L289N.h"
+/* 1/8/2020
+ * Samuel Ryckman
+ * 
+ * Header file for the Wingoneer BTS7960 motor controller library.
+ * 
+ * BTS7960(rPwmPin, lPwmPin, enPin, invert) - Constructor. Define control pins and motor direction.
+ * init() - initialize the motor controller. Should be called in the Arduino setup().
+ * run(speed) - Run the motor at the specified speed.
+ * stop() - Stop (brake) the motor.
+ */
 
-L289N::L289N(int _dir1, int _dir2, int _pwm, bool _invert = false)
-{
-	dir1 = _dir1;
-	dir2 = _dir2;
-	pwm  = _pwm ;
-	invert = _invert;
-	
-	if (!invert)
-	{
-		forwardDirection = 1;
-		backwardDirection = 0;
-	}
-	else
-	{
-		forwardDirection = 0;
-		backwardDirection = 1;
-	}
-}
+#include "BTS7960.h"
+
+/** Constructor for the class
+* @param rPwmPin
+*/
+BTS7960::BTS7960(int rPwmPin, int lPwmPin, int enPin, bool invert = false)
+    : rPwmPin(rPwmPin),
+      lPwmPin(lPwmPin),
+      enPin(enPin),
+      invert(invert)
+{ }
+
 
 /**
 * Initialize the controller pins.
 */
-void L289N::init()
+void BTS7960::init()
 {
-	pinMode(dir1, OUTPUT);
-	pinMode(dir2, OUTPUT);
-	pinMode(pwm, OUTPUT);
+	pinMode(rPwmPin, OUTPUT);
+	pinMode(lPwmPin, OUTPUT);
+	pinMode(enPin, OUTPUT);
 }
 
-void L289N::forwards()
-{  
-	digitalWrite(dir1, forwardDirection);
-	digitalWrite(dir2, backwardDirection);
+
+/**
+* Run the motor at the specified speed.
+* 
+* @param speed - the speed for the motor in the range 255 to -255.
+*/
+void BTS7960::run(int speed)
+{
+    //get the direction
+    
+    
+    //set the direction. Invert if needed.
+    if (speed > 0) {
+        digitalWrite(rPwmPin, LOW ^ invert);
+        digitalWrite(lPwmPin, HIGH ^ invert);
+    } else {
+        digitalWrite(rPwmPin, HIGH ^ invert);
+        digitalWrite(lPwmPin, LOW ^ invert);
+    }
+    
+    //set the speed
+	analogWrite(enPin, constrain(abs(speed), 0, 255));
 }
 
-void L289N::backwards()
-{
-	digitalWrite(dir1, backwardDirection);
-	digitalWrite(dir2, forwardDirection);
-}
 
-void L289N::setSpeed(int speed)
+/**
+* Stop (break) the motor.
+*/
+void BTS7960::stop()
 {
-	analogWrite(pwm, constrain(speed, 0, 255));
-}
-
-void L289N::setSpeedDirection(int speed)
-{
-	if (speed >= 0)
-	{
-		forwards();
-		setSpeed(speed);
-	}
-	else
-	{
-		backwards();
-		setSpeed(abs(speed));
-	}
+    //pull both low.
+	digitalWrite(rPwmPin, LOW);
+	digitalWrite(lPwmPin, LOW);
+    
+    //enable
+	analogWrite(enPin, 255);
 }
