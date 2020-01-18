@@ -1,6 +1,6 @@
 
-# Wingoneer BTS7960  
-Arduino Library for the Wingoneer BTS7960 Motor Controller. 
+# BTS7960 Motor Controller  
+Arduino Library for the BTS7960 Motor Controller. 
 
 # Usage  
 **Create:**  
