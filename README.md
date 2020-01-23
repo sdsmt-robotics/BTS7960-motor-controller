@@ -1,6 +1,6 @@
 
-# Wingoneer BTS7960  
-Arduino Library for the Wingoneer BTS7960 Motor Controller. 
+# BTS7960 Motor Controller  
+Arduino Library for the BTS7960 Motor Controller. 
 
 # Usage  
 **Create:**  
@@ -35,7 +35,7 @@ Make the motor stop.
 
   
 # Controller Info  
-![Pinout](https://cdn.instructables.com/F3W/PCEK/JVH3KZLD/F3WPCEKJVH3KZLD.LARGE.jpg)
+<img src="https://cdn.instructables.com/F3W/PCEK/JVH3KZLD/F3WPCEKJVH3KZLD.LARGE.jpg" width="600" />
 
 Datasheet: [https://cdn.instructables.com/ORIG/FYD/V3VU/HUL8W2ZW/FYDV3VUHUL8W2ZW.pdf](https://cdn.instructables.com/ORIG/FYD/V3VU/HUL8W2ZW/FYDV3VUHUL8W2ZW.pdf)
 
