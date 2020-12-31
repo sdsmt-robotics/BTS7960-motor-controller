@@ -17,6 +17,7 @@ public:
   void init();
   void run(int speed);
   void stop();
+  void brake();
   
 private:
   int rPwmPin, lPwmPin, enPin;

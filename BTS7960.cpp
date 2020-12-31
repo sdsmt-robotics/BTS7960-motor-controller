@@ -6,7 +6,8 @@
  * BTS7960(rPwmPin, lPwmPin, enPin, invert) - Constructor. Define control pins and motor direction.
  * init() - initialize the motor controller. Should be called in the Arduino setup().
  * run(speed) - Run the motor at the specified speed.
- * stop() - Stop (brake) the motor.
+ * stop() - Stop the motor. Allow to coast.
+ * brake() -  Stop the motor with braking action.
  */
 
 #include "BTS7960.h"
@@ -25,11 +26,12 @@ BTS7960::BTS7960(int rPwmPin, int lPwmPin, int enPin, bool invert = false)
 /**
 * Initialize the controller pins.
 */
-void BTS7960::init()
-{
+void BTS7960::init() {
 	pinMode(rPwmPin, OUTPUT);
 	pinMode(lPwmPin, OUTPUT);
 	pinMode(enPin, OUTPUT);
+    
+    digitalWrite(enPin, HIGH);
 }
 
 
@@ -38,34 +40,45 @@ void BTS7960::init()
 * 
 * @param speed - the speed for the motor in the range 255 to -255.
 */
-void BTS7960::run(int speed)
-{
-    //get the direction
-    
-    
-    //set the direction. Invert if needed.
-    if (speed > 0) {
-        digitalWrite(rPwmPin, LOW ^ invert);
-        digitalWrite(lPwmPin, HIGH ^ invert);
-    } else {
-        digitalWrite(rPwmPin, HIGH ^ invert);
-        digitalWrite(lPwmPin, LOW ^ invert);
+void BTS7960::run(int speed) {
+    // Invert if needed
+    if (invert) {
+        speed = -speed;
     }
     
-    //set the speed
-	analogWrite(enPin, constrain(abs(speed), 0, 255));
+    // Set outputs accordingly.
+    if (speed > 0) {
+        analogWrite(rPwmPin, 0);
+        analogWrite(lPwmPin, constrain(abs(speed), 0, 255));
+    } else {
+        analogWrite(rPwmPin, constrain(abs(speed), 0, 255));
+        analogWrite(lPwmPin, 0);
+    }
+    
+    // Enable output
+	digitalWrite(enPin, HIGH);
 }
 
+/**
+* Stop the motor. Allow to coast.
+*/
+void BTS7960::stop() {
+    //pull both low.
+	analogWrite(rPwmPin, 0);
+	analogWrite(lPwmPin, 0);
+    
+    // Disable output
+	digitalWrite(enPin, LOW);
+}
 
 /**
-* Stop (break) the motor.
+* Stop the motor with braking action. (Doesn't really do much. Just slows down sligtly faster.)
 */
-void BTS7960::stop()
-{
+void BTS7960::brake() {
     //pull both low.
-	digitalWrite(rPwmPin, LOW);
-	digitalWrite(lPwmPin, LOW);
+	analogWrite(rPwmPin, 0);
+	analogWrite(lPwmPin, 0);
     
-    //enable
-	analogWrite(enPin, 255);
+    // Enable output
+	digitalWrite(enPin, HIGH);
 }

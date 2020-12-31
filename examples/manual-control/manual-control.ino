@@ -6,16 +6,16 @@
  * 
  * +/-: increase or decrease speed.
  * space: toggle motor on/off.
+ * b: brake.
  */
 
 #include "BTS7960.h"
 
 char readVal = 'u';
-int brightness = 128;
 
 //Define motor controller.
-//rPwmPin = 40, lPwmPin = 42, enPin = 44.
-BTS7960 motor(40, 42, 44);
+//BTS7960(rPwmPin, lPwmPin, enPin, invert = false)
+BTS7960 motor(6, 5, 7);
 
 
 /**
@@ -34,7 +34,7 @@ void printControllerState(bool motorRunning, int motorSpeed)
 
 //=====setup==============================
 void setup() {
-  Serial.begin(38400);
+  Serial.begin(115200);
   
   //initialize the motor controller
   motor.init();
@@ -77,6 +77,11 @@ void loop() {
       motorSpeed -= 5;
       motorRunning = true;
       motor.run(motorSpeed);
+      break;
+    case 'b':
+      Serial.println("Motor brake");
+      motor.brake();
+      motorRunning = false;
       break;
     default:
       break;
